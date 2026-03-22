@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import type { GiftAccountRow, WeddingData } from "./data/wedding";
 import { galleryImageUrls } from "./data/galleryImages.generated";
 import { venueMapEmbedSrc } from "./mapEmbed";
+import { NaverMapPreview } from "./NaverMapPreview";
 import { publicAssetUrl } from "./publicAssetUrl";
 import { useReveal } from "./hooks/useReveal";
 import styles from "./WeddingInvite.module.css";
@@ -118,6 +119,12 @@ export function WeddingInvite({ data }: Props) {
   );
 
   const venueMapSrc = venueMapEmbedSrc(data.venue);
+  const naverClientId =
+    (import.meta.env.VITE_NAVER_MAP_CLIENT_ID as string | undefined)?.trim() ||
+    data.venue.naverMapClientId?.trim() ||
+    "";
+  const naverScriptQuery = data.venue.naverMapScriptQuery ?? "ncpClientId";
+  const showJsNaverMap = Boolean(naverClientId && data.venue.mapPreview);
 
   return (
     <>
@@ -228,7 +235,14 @@ export function WeddingInvite({ data }: Props) {
           <p className={styles.venueName}>{data.venue.name}</p>
           {data.venue.hall ? <p className={styles.venueHall}>{data.venue.hall}</p> : null}
           <p className={styles.venueAddr}>{data.venue.address}</p>
-          {venueMapSrc ? (
+          {showJsNaverMap && data.venue.mapPreview ? (
+            <NaverMapPreview
+              clientId={naverClientId}
+              scriptQuery={naverScriptQuery}
+              lat={data.venue.mapPreview.lat}
+              lng={data.venue.mapPreview.lng}
+            />
+          ) : venueMapSrc ? (
             <div className={styles.mapPreviewWrap}>
               <iframe
                 title={`${data.venue.name} 위치 지도 미리보기`}

@@ -46,9 +46,17 @@ export type WeddingData = {
     hall?: string;
     address: string;
     mapUrl: string;
-    /** 지도 미리보기: 네이버 지도 웹에서 장소 → 우클릭으로 위·경도 확인 후 입력 (OpenStreetMap 임베드) */
+    /** 지도 미리보기: 네이버 지도 중심 좌표(WGS84). 네이버 지도에서 장소 기준으로 확인 후 입력 */
     mapPreview?: { lat: number; lng: number };
-    /** 네이버 지도 「공유 → HTML 태그」의 iframe src URL — 있으면 이 값을 우선 사용 */
+    /**
+     * 네이버 클라우드 플랫폼 Dynamic Map 클라이언트 ID.
+     * 설정 시 Open API v3로 실제 지도(살롱드레터형). 없으면 iframe(v5/OSM)만 사용.
+     * 배포 시에는 `.env`의 `VITE_NAVER_MAP_CLIENT_ID`로 넣어도 됩니다.
+     */
+    naverMapClientId?: string;
+    /** 스크립트 쿼리 파라미터 이름 — 콘솔에 맞게 `ncpClientId` 또는 `ncpKeyId` */
+    naverMapScriptQuery?: "ncpClientId" | "ncpKeyId";
+    /** 네이버 지도 「공유 → HTML 태그」의 iframe src — JS 지도 미사용 시 최우선 */
     mapEmbedUrl?: string;
   };
   giftAccounts: {
@@ -92,6 +100,9 @@ export const wedding: WeddingData = {
     mapUrl: "https://map.naver.com/p/entry/place/2070513853",
     /** 당산동3가·국회대로(영등포구청역 쪽). 여의도 국회단지 동쪽 구간과 혼동되지 않도록 경도 ~126.90 */
     mapPreview: { lat: 37.525690, lng: 126.902005 },
+    naverMapClientId: "o6g15fands",
+    /** 지도가 비면 콘솔 스크립트가 `ncpKeyId=` 형태인지 확인 후 아래 주석 해제 */
+    // naverMapScriptQuery: "ncpKeyId",
   },
   giftAccounts: {
     groomSide: {
