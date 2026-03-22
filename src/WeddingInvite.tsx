@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import type { WeddingData } from "./data/wedding";
 import { galleryImageUrls } from "./data/galleryImages.generated";
+import { publicAssetUrl } from "./publicAssetUrl";
 import { useReveal } from "./hooks/useReveal";
 import styles from "./WeddingInvite.module.css";
 
@@ -217,7 +218,7 @@ export function WeddingInvite({ data }: Props) {
                   >
                     <img
                       className={styles.galleryImg}
-                      src={src}
+                      src={publicAssetUrl(src)}
                       alt={alt}
                       loading="lazy"
                       draggable={false}
@@ -273,7 +274,7 @@ export function WeddingInvite({ data }: Props) {
           >
             <img
               className={styles.lightboxImg}
-              src={galleryImageUrls[lightboxIndex]}
+              src={publicAssetUrl(galleryImageUrls[lightboxIndex])}
               alt={`웨딩 사진 ${lightboxIndex + 1}`}
               draggable={false}
               onClick={(e) => e.stopPropagation()}
