@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import type { WeddingData } from "./data/wedding";
+import type { GiftAccountRow, WeddingData } from "./data/wedding";
 import { galleryImageUrls } from "./data/galleryImages.generated";
+import { venueMapEmbedSrc } from "./mapEmbed";
 import { publicAssetUrl } from "./publicAssetUrl";
 import { useReveal } from "./hooks/useReveal";
 import styles from "./WeddingInvite.module.css";
@@ -89,6 +90,16 @@ export function WeddingInvite({ data }: Props) {
     swipeRef.current = null;
   }, []);
 
+  const goLightboxPrev = useCallback(() => {
+    setLightboxIndex((i) => (i !== null && i > 0 ? i - 1 : i));
+  }, []);
+
+  const goLightboxNext = useCallback(() => {
+    setLightboxIndex((i) =>
+      i !== null && i < galleryImageUrls.length - 1 ? i + 1 : i
+    );
+  }, []);
+
   const showCopied = useCallback(() => {
     setToast(true);
     window.setTimeout(() => setToast(false), 2200);
@@ -106,21 +117,50 @@ export function WeddingInvite({ data }: Props) {
     [showCopied]
   );
 
+  const venueMapSrc = venueMapEmbedSrc(data.venue);
+
   return (
     <>
-      <header className={styles.hero}>
-        <div className={styles.heroGlow} aria-hidden />
-        <p className={styles.eyebrow}>Wedding Invitation</p>
-        <div className={styles.names}>
-          <span className={styles.name}>{data.couple.groom}</span>
-          <span className={styles.ampersand} aria-hidden>
-            &
-          </span>
-          <span className={styles.name}>{data.couple.bride}</span>
+      <header className={styles.heroStack}>
+        <div className={styles.heroVisual} aria-label="웨딩 비주얼">
+          <div className={styles.heroBg} aria-hidden>
+            <img
+              className={styles.heroBgIllu}
+              src={publicAssetUrl("/illustration.jpg")}
+              alt=""
+              fetchPriority="high"
+            />
+            <img
+              className={styles.heroBgPhoto}
+              src={publicAssetUrl("/image.jpg")}
+              alt=""
+              fetchPriority="high"
+            />
+            <div className={styles.heroBgScrim} />
+          </div>
+          <span className={styles.scrollHint}>SCROLL</span>
         </div>
-        <p className={styles.kicker}>{data.headline}</p>
-        <p className={styles.subline}>{data.subline}</p>
-        <span className={styles.scrollHint}>SCROLL</span>
+
+        <div className={styles.heroCopy}>
+          <div className={styles.heroCopyInner}>
+            <p className={styles.heroDateEyebrow}>Wedding Day</p>
+            <p className={styles.heroDatePrimary}>{data.hero.dateLine}</p>
+            {data.hero.timeLine ? (
+              <p className={styles.heroDateTime}>{data.hero.timeLine}</p>
+            ) : null}
+            <div className={styles.heroCopyDivider} aria-hidden />
+            <p className={styles.introEyebrow}>Wedding Invitation</p>
+            <div className={styles.introNames}>
+              <span className={styles.introName}>{data.couple.groom}</span>
+              <span className={styles.introAmpersand} aria-hidden>
+                &
+              </span>
+              <span className={styles.introName}>{data.couple.bride}</span>
+            </div>
+            <p className={styles.introKicker}>{data.headline}</p>
+            <p className={styles.introSubline}>{data.subline}</p>
+          </div>
+        </div>
       </header>
 
       <RevealSection>
@@ -130,6 +170,39 @@ export function WeddingInvite({ data }: Props) {
             {data.message.map((line) => (
               <p key={line}>{line}</p>
             ))}
+          </div>
+          <div className={styles.familyLines}>
+            <div
+              className={
+                data.familyPresentation.groomMotherGu
+                  ? `${styles.familyLinesGrid} ${styles.familyLinesGridGu}`
+                  : `${styles.familyLinesGrid} ${styles.familyLinesGridPlain}`
+              }
+            >
+              <span className={styles.familyFather}>{data.familyPresentation.groomParents[0]}</span>
+              <span className={styles.familyDot} aria-hidden>
+                ·
+              </span>
+              {data.familyPresentation.groomMotherGu ? (
+                <span className={styles.familyGuSlot}>
+                  <span className={styles.familyGu}>故</span>
+                </span>
+              ) : null}
+              <span className={styles.familyMother}>{data.familyPresentation.groomParents[1]}</span>
+              <span className={styles.familyRelation}>의 아들</span>
+              <span className={styles.familyName}>{data.couple.groom}</span>
+
+              <span className={styles.familyFather}>{data.familyPresentation.brideParents[0]}</span>
+              <span className={styles.familyDot} aria-hidden>
+                ·
+              </span>
+              {data.familyPresentation.groomMotherGu ? (
+                <span className={styles.familyGuSlot} aria-hidden />
+              ) : null}
+              <span className={styles.familyMother}>{data.familyPresentation.brideParents[1]}</span>
+              <span className={styles.familyRelation}>의 딸</span>
+              <span className={styles.familyName}>{data.couple.bride}</span>
+            </div>
           </div>
         </div>
       </RevealSection>
@@ -155,40 +228,20 @@ export function WeddingInvite({ data }: Props) {
           <p className={styles.venueName}>{data.venue.name}</p>
           {data.venue.hall ? <p className={styles.venueHall}>{data.venue.hall}</p> : null}
           <p className={styles.venueAddr}>{data.venue.address}</p>
+          {venueMapSrc ? (
+            <div className={styles.mapPreviewWrap}>
+              <iframe
+                title={`${data.venue.name} 위치 지도 미리보기`}
+                src={venueMapSrc}
+                className={styles.mapPreviewFrame}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          ) : null}
           <a className={styles.mapBtn} href={data.venue.mapUrl} target="_blank" rel="noreferrer">
             지도에서 보기
           </a>
-        </div>
-      </RevealSection>
-
-      <RevealSection>
-        <div className={styles.sectionInner}>
-          <h2 className={styles.sectionTitle}>Gift</h2>
-          <p className={styles.message} style={{ marginBottom: "1.25rem" }}>
-            <span style={{ display: "block", fontSize: "0.88rem", lineHeight: 1.75 }}>
-              축하의 마음만으로도 충분합니다.
-              <br />
-              부득이하게 전하시려면 아래 계좌를 이용해 주세요.
-            </span>
-          </p>
-          <div className={styles.accounts}>
-            {data.accounts.map((acc) => (
-              <div key={acc.number} className={styles.accountRow}>
-                <div className={styles.accountMeta}>
-                  <p className={styles.accountHolder}>{acc.holder}</p>
-                  <p className={styles.accountBank}>{acc.bank}</p>
-                  <p className={`${styles.accountNum} mono-nums`}>{acc.number}</p>
-                </div>
-                <button
-                  type="button"
-                  className={styles.copyBtn}
-                  onClick={() => void copyNumber(acc.number)}
-                >
-                  복사
-                </button>
-              </div>
-            ))}
-          </div>
         </div>
       </RevealSection>
 
@@ -231,6 +284,53 @@ export function WeddingInvite({ data }: Props) {
         </div>
       </RevealSection>
 
+      <RevealSection>
+        <div className={styles.sectionInner}>
+          <h2 className={styles.sectionTitle}>Gift</h2>
+          <p className={styles.message} style={{ marginBottom: "1.25rem" }}>
+            <span style={{ display: "block", fontSize: "0.88rem", lineHeight: 1.75 }}>
+              축하의 마음만으로도 충분합니다.
+              <br />
+              부득이하게 전하시려면 아래 계좌를 이용해 주세요.
+            </span>
+          </p>
+          <div className={styles.accountSides}>
+            <details className={styles.accountDisclosure}>
+              <summary className={styles.accountDisclosureSummary}>
+                {data.giftAccounts.groomSide.sideTitle}
+                <span className={styles.accountDisclosureChevron} aria-hidden>
+                  ▼
+                </span>
+              </summary>
+              <div className={styles.accountDisclosureBody}>
+                {data.giftAccounts.groomSide.groups.map((group) => (
+                  <div key={group.groupLabel} className={styles.accountGroup}>
+                    <p className={styles.accountGroupLabel}>{group.groupLabel}</p>
+                    <GiftAccountBlock accounts={group.accounts} onCopy={copyNumber} />
+                  </div>
+                ))}
+              </div>
+            </details>
+            <details className={styles.accountDisclosure}>
+              <summary className={styles.accountDisclosureSummary}>
+                {data.giftAccounts.brideSide.sideTitle}
+                <span className={styles.accountDisclosureChevron} aria-hidden>
+                  ▼
+                </span>
+              </summary>
+              <div className={styles.accountDisclosureBody}>
+                {data.giftAccounts.brideSide.groups.map((group) => (
+                  <div key={group.groupLabel} className={styles.accountGroup}>
+                    <p className={styles.accountGroupLabel}>{group.groupLabel}</p>
+                    <GiftAccountBlock accounts={group.accounts} onCopy={copyNumber} />
+                  </div>
+                ))}
+              </div>
+            </details>
+          </div>
+        </div>
+      </RevealSection>
+
       <footer className={styles.footer}>
         <p className={styles.footerEn}>Thank you</p>
         <p className={styles.footerKo}>
@@ -264,7 +364,46 @@ export function WeddingInvite({ data }: Props) {
             }}
             aria-label="닫기"
           >
-            닫기
+            <svg
+              className={styles.lightboxCloseIcon}
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              aria-hidden="true"
+            >
+              <path
+                d="M7 7l10 10M17 7L7 17"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className={`${styles.lightboxNav} ${styles.lightboxNavPrev}`}
+            disabled={lightboxIndex <= 0}
+            onClick={(e) => {
+              e.stopPropagation();
+              goLightboxPrev();
+            }}
+            aria-label="이전 사진"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            className={`${styles.lightboxNav} ${styles.lightboxNavNext}`}
+            disabled={lightboxIndex >= galleryImageUrls.length - 1}
+            onClick={(e) => {
+              e.stopPropagation();
+              goLightboxNext();
+            }}
+            aria-label="다음 사진"
+          >
+            ›
           </button>
           <div
             className={styles.lightboxStage}
@@ -286,6 +425,31 @@ export function WeddingInvite({ data }: Props) {
         </div>
       ) : null}
     </>
+  );
+}
+
+function GiftAccountBlock({
+  accounts,
+  onCopy,
+}: {
+  accounts: GiftAccountRow[];
+  onCopy: (num: string) => void;
+}) {
+  return (
+    <div className={styles.accountRows}>
+      {accounts.map((acc) => (
+        <div key={`${acc.holder}-${acc.number}`} className={styles.accountRow}>
+          <div className={styles.accountMeta}>
+            <p className={styles.accountHolder}>{acc.holder}</p>
+            <p className={styles.accountBank}>{acc.bank}</p>
+            <p className={`${styles.accountNum} mono-nums`}>{acc.number}</p>
+          </div>
+          <button type="button" className={styles.copyBtn} onClick={() => void onCopy(acc.number)}>
+            복사
+          </button>
+        </div>
+      ))}
+    </div>
   );
 }
 
