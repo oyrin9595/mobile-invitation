@@ -1,4 +1,4 @@
-/* 상단: 일러스트·사진만 / 하단: 날짜·문구 (참고: mochung 스타일 분리) */
+/* 상단: 일러스트·사진 / 그 아래 날짜·문구 — 모바일(≤640px)은 비주얼만 첫 화면 풀뷰 */
 .heroStack {
   display: flex;
   flex-direction: column;
@@ -183,6 +183,25 @@
   line-height: 1.75;
   color: var(--muted);
   font-weight: 300;
+}
+
+/* 모바일: 첫 화면은 일러스트/사진만 풀스크린, 날짜·문구는 스크롤 후 */
+@media (max-width: 640px) {
+  .heroStack {
+    min-height: 0;
+  }
+
+  .heroVisual {
+    height: 100svh;
+    height: 100dvh;
+    min-height: 100svh;
+    min-height: 100dvh;
+    max-height: none;
+  }
+
+  .heroCopy {
+    flex: none;
+  }
 }
 
 @keyframes float {
@@ -602,11 +621,8 @@
   position: fixed;
   inset: 0;
   z-index: 200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: max(0.75rem, var(--safe-top)) max(0.75rem, env(safe-area-inset-right, 0px))
-    max(0.75rem, var(--safe-bottom)) max(0.75rem, env(safe-area-inset-left, 0px));
+  display: block;
+  padding: 0;
   background: rgba(12, 11, 10, 0.94);
   touch-action: none;
   overscroll-behavior: none;
@@ -616,7 +632,7 @@
   position: absolute;
   top: max(0.55rem, calc(var(--safe-top) + 0.25rem));
   right: max(0.55rem, env(safe-area-inset-right, 0px));
-  z-index: 1;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -662,7 +678,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 2;
+  z-index: 10;
   width: 2.65rem;
   height: 2.65rem;
   margin: 0;
@@ -699,42 +715,50 @@
 }
 
 .lightboxNavPrev {
-  left: max(0.4rem, env(safe-area-inset-left, 0px));
+  left: max(0.35rem, calc(env(safe-area-inset-left, 0px) + 0.2rem));
   padding-right: 0.12rem;
 }
 
 .lightboxNavNext {
-  right: max(0.4rem, env(safe-area-inset-right, 0px));
+  right: max(0.35rem, calc(env(safe-area-inset-right, 0px) + 0.2rem));
   padding-left: 0.12rem;
 }
 
 .lightboxStage {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  z-index: 0;
   touch-action: none;
 }
 
 .lightboxCounter {
   position: absolute;
-  bottom: max(1rem, var(--safe-bottom));
+  bottom: max(0.75rem, calc(var(--safe-bottom) + 0.35rem));
   left: 50%;
   transform: translateX(-50%);
+  z-index: 11;
   margin: 0;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
   font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.88);
   letter-spacing: 0.06em;
   pointer-events: none;
+  background: rgba(0, 0, 0, 0.35);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
 }
 
 .lightboxImg {
-  max-width: calc(100vw - 6.5rem);
-  max-height: calc(100dvh - 4.5rem);
-  width: auto;
-  height: auto;
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
   object-fit: contain;
+  object-position: center;
   user-select: none;
   -webkit-user-drag: none;
   touch-action: none;
