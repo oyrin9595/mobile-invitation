@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import type { WeddingData } from "./data/wedding";
 import { galleryImageUrls } from "./data/galleryImages.generated";
 import { useReveal } from "./hooks/useReveal";
@@ -8,16 +8,26 @@ type Props = { data: WeddingData };
 
 export function WeddingInvite({ data }: Props) {
   const [toast, setToast] = useState(false);
-  const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const swipeRef = useRef<{ x: number; y: number } | null>(null);
+  const suppressBackdropClickRef = useRef(false);
 
   useEffect(() => {
-    if (!lightbox) return;
+    if (lightboxIndex === null) return;
 
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setLightbox(null);
+      if (e.key === "Escape") setLightboxIndex(null);
+      if (e.key === "ArrowLeft") {
+        setLightboxIndex((i) => (i !== null && i > 0 ? i - 1 : i));
+      }
+      if (e.key === "ArrowRight") {
+        setLightboxIndex((i) =>
+          i !== null && i < galleryImageUrls.length - 1 ? i + 1 : i
+        );
+      }
     };
 
     const onWheel = (e: WheelEvent) => {
@@ -38,7 +48,45 @@ export function WeddingInvite({ data }: Props) {
       document.removeEventListener("wheel", onWheel);
       document.removeEventListener("touchmove", onTouchMove);
     };
-  }, [lightbox]);
+  }, [lightboxIndex]);
+
+  const onLightboxPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return;
+    swipeRef.current = { x: e.clientX, y: e.clientY };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  }, []);
+
+  const onLightboxPointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    const start = swipeRef.current;
+    swipeRef.current = null;
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {
+      /* 캡처 없음 */
+    }
+    if (start === null) return;
+
+    const dx = e.clientX - start.x;
+    const dy = e.clientY - start.y;
+    const minSwipe = 56;
+    if (Math.abs(dx) < minSwipe || Math.abs(dx) < Math.abs(dy) * 1.15) return;
+
+    if (dx < 0) {
+      setLightboxIndex((i) =>
+        i !== null && i < galleryImageUrls.length - 1 ? i + 1 : i
+      );
+    } else {
+      setLightboxIndex((i) => (i !== null && i > 0 ? i - 1 : i));
+    }
+    suppressBackdropClickRef.current = true;
+    window.setTimeout(() => {
+      suppressBackdropClickRef.current = false;
+    }, 400);
+  }, []);
+
+  const onLightboxPointerCancel = useCallback(() => {
+    swipeRef.current = null;
+  }, []);
 
   const showCopied = useCallback(() => {
     setToast(true);
@@ -164,7 +212,7 @@ export function WeddingInvite({ data }: Props) {
                   <button
                     type="button"
                     className={styles.galleryThumb}
-                    onClick={() => setLightbox({ src, alt })}
+                    onClick={() => setLightboxIndex(i)}
                     aria-label={`${alt} 전체 화면으로 보기`}
                   >
                     <img
@@ -195,32 +243,45 @@ export function WeddingInvite({ data }: Props) {
         계좌번호를 복사했어요
       </div>
 
-      {lightbox ? (
+      {lightboxIndex !== null ? (
         <div
           className={styles.lightbox}
           role="dialog"
           aria-modal="true"
-          aria-label="갤러리 전체 화면"
-          onClick={() => setLightbox(null)}
+          aria-label={`갤러리 ${lightboxIndex + 1}번째, 총 ${galleryImageUrls.length}장`}
+          onClick={() => {
+            if (suppressBackdropClickRef.current) return;
+            setLightboxIndex(null);
+          }}
         >
           <button
             type="button"
             className={styles.lightboxClose}
             onClick={(e) => {
               e.stopPropagation();
-              setLightbox(null);
+              setLightboxIndex(null);
             }}
             aria-label="닫기"
           >
             닫기
           </button>
-          <img
-            className={styles.lightboxImg}
-            src={lightbox.src}
-            alt={lightbox.alt}
-            draggable={false}
-            onClick={(e) => e.stopPropagation()}
-          />
+          <div
+            className={styles.lightboxStage}
+            onPointerDown={onLightboxPointerDown}
+            onPointerUp={onLightboxPointerUp}
+            onPointerCancel={onLightboxPointerCancel}
+          >
+            <img
+              className={styles.lightboxImg}
+              src={galleryImageUrls[lightboxIndex]}
+              alt={`웨딩 사진 ${lightboxIndex + 1}`}
+              draggable={false}
+              onClick={(e) => e.stopPropagation()}
+            />
+            <p className={styles.lightboxCounter} aria-hidden>
+              {lightboxIndex + 1} / {galleryImageUrls.length}
+            </p>
+          </div>
         </div>
       ) : null}
     </>
