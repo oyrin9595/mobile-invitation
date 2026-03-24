@@ -34,7 +34,7 @@
 
 .heroBgPhoto {
   opacity: 0;
-  animation: heroPhotoCrossfade 12s ease-in-out 1.4s forwards;
+  animation: heroPhotoCrossfade 6s ease-in-out 1s forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -264,7 +264,7 @@
 /* 아버지 · [故] 어머니 | 의 아들/딸 | 이름 — 열마다 시작 정렬 */
 .familyLinesGridGu {
   grid-template-columns: max-content max-content minmax(1.45em, max-content) max-content auto max-content;
-  column-gap: 0.48rem 0.62rem 0.58rem 0.95rem 1rem;
+  column-gap: 0.42rem 0.86rem 0.46rem 0.95rem 1rem;
 }
 
 .familyLinesGridPlain {
@@ -301,6 +301,17 @@
   box-sizing: content-box;
   min-width: 1.45em;
   min-height: 1em;
+  padding-left: 0.08em;
+}
+
+.familyLinesGridGu .familyDot {
+  margin-left: 0.5em;
+  margin-right: 0.32em;
+}
+
+.familyLinesGridGu .familyGuSlot {
+  padding-left: 0;
+  margin-right: -0.14em;
 }
 
 .familyGu {
@@ -310,7 +321,7 @@
 }
 
 .familyRelation {
-  margin: 0;
+  margin: 0.5em;
   font-size: 0.72rem;
   font-weight: 300;
   color: var(--muted);

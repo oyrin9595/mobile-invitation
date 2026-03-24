@@ -286,12 +286,12 @@ export function WeddingInvite({ data }: Props) {
 
       <RevealSection>
         <div className={styles.sectionInner}>
-          <h2 className={styles.sectionTitle}>Gift</h2>
+          <h2 className={styles.sectionTitle}>Account</h2>
           <p className={styles.message} style={{ marginBottom: "1.25rem" }}>
             <span style={{ display: "block", fontSize: "0.88rem", lineHeight: 1.75 }}>
-              축하의 마음만으로도 충분합니다.
+              전해주시는 축하의 마음은 소중하게 간직하여
               <br />
-              부득이하게 전하시려면 아래 계좌를 이용해 주세요.
+              좋은 부부의 모습으로 보답하겠습니다.
             </span>
           </p>
           <div className={styles.accountSides}>
