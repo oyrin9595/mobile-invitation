@@ -12,7 +12,7 @@
   width: 100%;
   height: clamp(300px, 54dvh, 520px);
   overflow: hidden;
-  padding-top: var(--safe-top);
+  padding-top: 0;
 }
 
 .heroBg {
@@ -192,11 +192,9 @@
   }
 
   .heroVisual {
-    /* Avoid dynamic viewport resize jank while browser UI collapses */
-    height: 100vh;
-    height: 100svh;
-    min-height: 100vh;
-    min-height: 100svh;
+    /* Lock hero height to initial viewport to avoid mid-scroll reflow/zoom effect */
+    height: calc(var(--hero-vh, 1svh) * 100);
+    min-height: calc(var(--hero-vh, 1svh) * 100);
     max-height: none;
   }
 

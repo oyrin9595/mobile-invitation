@@ -26,7 +26,8 @@ html {
 
 body {
   margin: 0;
-  min-height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
   overflow-x: hidden;
   font-family: var(--font-ko);
   font-weight: 300;
@@ -36,14 +37,16 @@ body {
 }
 
 #root {
-  min-height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
 }
 
 .app-shell {
   max-width: 440px;
   margin: 0 auto;
   padding: var(--safe-top) 0 var(--safe-bottom);
-  min-height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
 }
 
 .reveal {

@@ -15,6 +15,24 @@ export function WeddingInvite({ data }: Props) {
   const suppressBackdropClickRef = useRef(false);
 
   useEffect(() => {
+    const root = document.documentElement;
+    const setHeroViewportHeight = () => {
+      root.style.setProperty("--hero-vh", `${window.innerHeight * 0.01}px`);
+    };
+
+    setHeroViewportHeight();
+
+    const onOrientationChange = () => {
+      window.setTimeout(setHeroViewportHeight, 120);
+    };
+
+    window.addEventListener("orientationchange", onOrientationChange);
+    return () => {
+      window.removeEventListener("orientationchange", onOrientationChange);
+    };
+  }, []);
+
+  useEffect(() => {
     if (lightboxIndex === null) return;
 
     const prevOverflow = document.body.style.overflow;
