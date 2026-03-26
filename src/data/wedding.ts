@@ -104,7 +104,7 @@ export const wedding: WeddingData = {
         {
           groupLabel: "혼주",
           accounts: [
-            { holder: "이경윤 (父)", bank: "국민은행", number: "489725-01-011056" },
+            { holder: "이경윤 (父)", bank: "국민은행", number: "489725-01-011506" },
           ],
         },
       ],
