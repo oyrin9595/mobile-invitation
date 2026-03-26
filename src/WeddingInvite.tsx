@@ -27,7 +27,7 @@ export function WeddingInvite({ data }: Props) {
       }
       if (e.key === "ArrowRight") {
         setLightboxIndex((i) =>
-          i !== null && i < galleryImageUrls.length - 1 ? i + 1 : i
+          i !== null ? (i + 1) % galleryImageUrls.length : i
         );
       }
     };
@@ -75,7 +75,7 @@ export function WeddingInvite({ data }: Props) {
 
     if (dx < 0) {
       setLightboxIndex((i) =>
-        i !== null && i < galleryImageUrls.length - 1 ? i + 1 : i
+        i !== null ? (i + 1) % galleryImageUrls.length : i
       );
     } else {
       setLightboxIndex((i) => (i !== null && i > 0 ? i - 1 : i));
@@ -95,9 +95,7 @@ export function WeddingInvite({ data }: Props) {
   }, []);
 
   const goLightboxNext = useCallback(() => {
-    setLightboxIndex((i) =>
-      i !== null && i < galleryImageUrls.length - 1 ? i + 1 : i
-    );
+    setLightboxIndex((i) => (i !== null ? (i + 1) % galleryImageUrls.length : i));
   }, []);
 
   const showCopied = useCallback(() => {
@@ -396,7 +394,6 @@ export function WeddingInvite({ data }: Props) {
           <button
             type="button"
             className={`${styles.lightboxNav} ${styles.lightboxNavNext}`}
-            disabled={lightboxIndex >= galleryImageUrls.length - 1}
             onClick={(e) => {
               e.stopPropagation();
               goLightboxNext();
