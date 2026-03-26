@@ -192,10 +192,11 @@
   }
 
   .heroVisual {
+    /* Avoid dynamic viewport resize jank while browser UI collapses */
+    height: 100vh;
     height: 100svh;
-    height: 100dvh;
+    min-height: 100vh;
     min-height: 100svh;
-    min-height: 100dvh;
     max-height: none;
   }
 
