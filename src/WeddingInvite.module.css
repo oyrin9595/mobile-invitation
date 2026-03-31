@@ -448,6 +448,73 @@
   outline-offset: 3px;
 }
 
+.directionsIntro {
+  margin-bottom: 1.1rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid rgba(31, 28, 26, 0.06);
+}
+
+.directionsVenueLabel {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.directionsAddress {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.directionsPhone {
+  margin: 0.35rem 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.directionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.directionsGroup {
+  padding-bottom: 1.1rem;
+  margin-bottom: 1.1rem;
+  border-bottom: 1px solid rgba(31, 28, 26, 0.08);
+}
+
+.directionsGroup:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.directionsGroupTitle {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-en);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+.directionsLines {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+}
+
+.directionsLines li {
+  font-size: 0.84rem;
+  line-height: 1.75;
+  color: var(--muted);
+}
+
 .accountSides {
   display: flex;
   flex-direction: column;

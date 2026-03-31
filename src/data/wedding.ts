@@ -51,6 +51,15 @@ export type WeddingData = {
     /** 네이버 지도 「공유 → HTML 태그」의 iframe src URL — 있으면 이 값을 우선 사용 */
     mapEmbedUrl?: string;
   };
+  directions: {
+    venueLabel: string;
+    roadAddress: string;
+    phone?: string;
+    sections: {
+      title: string;
+      lines: string[];
+    }[];
+  };
   giftAccounts: {
     groomSide: GiftAccountSide;
     brideSide: GiftAccountSide;
@@ -92,6 +101,34 @@ export const wedding: WeddingData = {
     mapUrl: "https://map.naver.com/p/entry/place/2070513853",
     /** 당산동3가·국회대로(영등포구청역 쪽). 여의도 국회단지 동쪽 구간과 혼동되지 않도록 경도 ~126.90 */
     mapPreview: { lat: 37.525690, lng: 126.902005 },
+  },
+  directions: {
+    venueLabel: "더베르G",
+    roadAddress: "서울시 영등포구 국회대로 612 코레일유통사옥 2층 더베르G",
+    phone: "02.2088.5272",
+    sections: [
+      {
+        title: "자가용 이용 시",
+        lines: ["네비게이션 [더베르G] 검색", "국회대로 612 2층 / 당산동 3가 2-7"],
+      },
+      {
+        title: "지하철 이용 시",
+        lines: ["2호선·5호선 영등포구청역 4번 출구에서 566m (도보 약 7분)"],
+      },
+      {
+        title: "버스 이용 시",
+        lines: [
+          "서울시립청소년 문화센터[19-439]: 간선 660",
+          "하이서울유스호스텔[19-127]: 일반 5",
+          "신화병원[19-121]: 좌석700, 간선 605·661, 간선 760, 지선 5616·5714",
+          "삼환아파트[19-125]: 직행 9030, 직행 8000",
+        ],
+      },
+      {
+        title: "셔틀버스 안내",
+        lines: ["영등포구청역 5번 출구 우리은행 앞 ↔ 더베르G 주차장 입구 좌측"],
+      },
+    ],
   },
   giftAccounts: {
     groomSide: {

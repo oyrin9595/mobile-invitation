@@ -263,6 +263,31 @@ export function WeddingInvite({ data }: Props) {
 
       <RevealSection>
         <div className={styles.sectionInner}>
+          <h2 className={styles.sectionTitle}>오시는길</h2>
+          <div className={styles.directionsIntro}>
+            <p className={styles.directionsVenueLabel}>{data.directions.venueLabel}</p>
+            <p className={styles.directionsAddress}>{data.directions.roadAddress}</p>
+            {data.directions.phone ? (
+              <p className={`${styles.directionsPhone} mono-nums`}>Tel. {data.directions.phone}</p>
+            ) : null}
+          </div>
+          <div className={styles.directionsList}>
+            {data.directions.sections.map((section) => (
+              <section key={section.title} className={styles.directionsGroup}>
+                <h3 className={styles.directionsGroupTitle}>{section.title}</h3>
+                <ul className={styles.directionsLines}>
+                  {section.lines.map((line) => (
+                    <li key={line}>{line}</li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        </div>
+      </RevealSection>
+
+      <RevealSection>
+        <div className={styles.sectionInner}>
           <h2 className={styles.sectionTitle}>Gallery</h2>
           <p
             style={{
