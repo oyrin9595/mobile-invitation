@@ -14,6 +14,7 @@ type GuestbookEntry = {
   message: string;
   created_at: string;
 };
+const GUESTBOOK_PAGE_SIZE = 5;
 
 export function WeddingInvite({ data }: Props) {
   const [toast, setToast] = useState(false);
@@ -26,7 +27,9 @@ export function WeddingInvite({ data }: Props) {
   const [formMessage, setFormMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [deletePasswordById, setDeletePasswordById] = useState<Record<string, string>>({});
+  const [openedDeleteId, setOpenedDeleteId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [guestbookPage, setGuestbookPage] = useState(1);
   const swipeRef = useRef<{ x: number; y: number } | null>(null);
   const suppressBackdropClickRef = useRef(false);
 
@@ -105,6 +108,7 @@ export function WeddingInvite({ data }: Props) {
     } else {
       setGuestbookError(null);
       setEntries(data ?? []);
+      setGuestbookPage(1);
     }
     setGuestbookLoading(false);
   }, []);
@@ -202,6 +206,7 @@ export function WeddingInvite({ data }: Props) {
         const created = data?.entry as GuestbookEntry | undefined;
         if (created) {
           setEntries((prev) => [created, ...prev]);
+          setGuestbookPage(1);
         } else {
           await fetchGuestbook();
         }
@@ -238,7 +243,13 @@ export function WeddingInvite({ data }: Props) {
       if (error) {
         setGuestbookError("비밀번호가 다르거나 삭제에 실패했어요.");
       } else {
-        setEntries((prev) => prev.filter((entry) => entry.id !== id));
+        setEntries((prev) => {
+          const next = prev.filter((entry) => entry.id !== id);
+          const maxPage = Math.max(1, Math.ceil(next.length / GUESTBOOK_PAGE_SIZE));
+          setGuestbookPage((current) => (current > maxPage ? maxPage : current));
+          return next;
+        });
+        setOpenedDeleteId((prev) => (prev === id ? null : prev));
         setDeletePasswordById((prev) => {
           const next = { ...prev };
           delete next[id];
@@ -262,6 +273,10 @@ export function WeddingInvite({ data }: Props) {
   }, []);
 
   const venueMapSrc = venueMapEmbedSrc(data.venue);
+  const totalGuestbookPages = Math.max(1, Math.ceil(entries.length / GUESTBOOK_PAGE_SIZE));
+  const guestbookPageNumbers = Array.from({ length: totalGuestbookPages }, (_, i) => i + 1);
+  const guestbookPageStart = (guestbookPage - 1) * GUESTBOOK_PAGE_SIZE;
+  const pagedEntries = entries.slice(guestbookPageStart, guestbookPageStart + GUESTBOOK_PAGE_SIZE);
   const { year, month, day } = data.calendarDate;
   const firstWeekday = new Date(year, month - 1, 1).getDay();
   const daysInMonth = new Date(year, month, 0).getDate();
@@ -576,38 +591,87 @@ export function WeddingInvite({ data }: Props) {
             ) : entries.length === 0 ? (
               <p className={styles.guestbookEmpty}>첫 축하 메시지를 남겨주세요.</p>
             ) : (
-              entries.map((entry) => (
+              pagedEntries.map((entry) => (
                 <article key={entry.id} className={styles.guestbookItem}>
                   <div className={styles.guestbookItemHead}>
-                    <p className={styles.guestbookName}>{entry.name}</p>
-                    <p className={styles.guestbookDate}>{formatGuestbookDate(entry.created_at)}</p>
-                  </div>
-                  <p className={styles.guestbookMessage}>{entry.message}</p>
-                  <div className={styles.guestbookDeleteRow}>
-                    <input
-                      className={styles.guestbookDeleteInput}
-                      type="password"
-                      placeholder="삭제 비밀번호"
-                      value={deletePasswordById[entry.id] ?? ""}
-                      onChange={(e) =>
-                        setDeletePasswordById((prev) => ({ ...prev, [entry.id]: e.target.value }))
-                      }
-                      minLength={4}
-                      maxLength={20}
-                    />
+                    <div className={styles.guestbookHeadLine}>
+                      <p className={styles.guestbookName}>{entry.name}</p>
+                      <p className={styles.guestbookDate}>{formatGuestbookDate(entry.created_at)}</p>
+                    </div>
                     <button
                       type="button"
-                      className={styles.guestbookDeleteButton}
-                      disabled={deletingId === entry.id}
-                      onClick={() => void onDeleteGuestbook(entry.id)}
+                      className={styles.guestbookDeleteIconButton}
+                      aria-label={openedDeleteId === entry.id ? "삭제 입력 닫기" : "삭제 입력 열기"}
+                      onClick={() =>
+                        setOpenedDeleteId((prev) => (prev === entry.id ? null : entry.id))
+                      }
                     >
-                      {deletingId === entry.id ? "삭제 중..." : "삭제"}
+                      <span aria-hidden="true">×</span>
                     </button>
                   </div>
+                  <p className={styles.guestbookMessage}>{entry.message}</p>
+                  {openedDeleteId === entry.id ? (
+                    <div className={styles.guestbookDeleteRow}>
+                      <input
+                        className={styles.guestbookDeleteInput}
+                        type="password"
+                        placeholder="삭제 비밀번호"
+                        value={deletePasswordById[entry.id] ?? ""}
+                        onChange={(e) =>
+                          setDeletePasswordById((prev) => ({ ...prev, [entry.id]: e.target.value }))
+                        }
+                        minLength={4}
+                        maxLength={20}
+                      />
+                      <button
+                        type="button"
+                        className={styles.guestbookDeleteButton}
+                        disabled={deletingId === entry.id}
+                        onClick={() => void onDeleteGuestbook(entry.id)}
+                      >
+                        {deletingId === entry.id ? "삭제 중..." : "삭제"}
+                      </button>
+                    </div>
+                  ) : null}
                 </article>
               ))
             )}
           </div>
+          {!guestbookLoading && entries.length > GUESTBOOK_PAGE_SIZE ? (
+            <div className={styles.guestbookPagination}>
+              <button
+                type="button"
+                className={styles.guestbookPageButton}
+                onClick={() => setGuestbookPage((prev) => Math.max(1, prev - 1))}
+                disabled={guestbookPage <= 1}
+              >
+                이전
+              </button>
+              <div className={styles.guestbookPageNumbers}>
+                {guestbookPageNumbers.map((pageNum) => (
+                  <button
+                    key={pageNum}
+                    type="button"
+                    className={`${styles.guestbookPageNumber} ${
+                      guestbookPage === pageNum ? styles.guestbookPageNumberActive : ""
+                    }`}
+                    onClick={() => setGuestbookPage(pageNum)}
+                    aria-current={guestbookPage === pageNum ? "page" : undefined}
+                  >
+                    {pageNum}
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
+                className={styles.guestbookPageButton}
+                onClick={() => setGuestbookPage((prev) => Math.min(totalGuestbookPages, prev + 1))}
+                disabled={guestbookPage >= totalGuestbookPages}
+              >
+                다음
+              </button>
+            </div>
+          ) : null}
         </div>
       </RevealSection>
 
