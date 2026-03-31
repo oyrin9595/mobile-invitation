@@ -100,7 +100,7 @@ export const wedding: WeddingData = {
     { label: "예식", datetime: "2025년 5월 23일 토요일 오후 3시 30분" },
   ],
   calendarDate: {
-    year: 2025,
+    year: 2026,
     month: 5,
     day: 23,
     weekday: "토요일",
