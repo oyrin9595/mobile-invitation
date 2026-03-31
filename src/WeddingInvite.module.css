@@ -382,6 +382,117 @@
   color: var(--muted);
 }
 
+.dateCalendarWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.dateSectionTitle {
+  font-family: "Great Vibes", "Times New Roman", serif;
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: #f08f97;
+  text-transform: none;
+}
+
+.dateHeadline {
+  margin: 0;
+  font-size: 0.98rem;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+
+.dateCalendarCard {
+  width: min(22rem, 100%);
+  border-radius: 0;
+  border: 1px solid rgba(31, 28, 26, 0.08);
+  background: #fff;
+  padding: 0.75rem 0.75rem 0.85rem;
+  display: grid;
+  justify-items: center;
+  gap: 0.4rem;
+}
+
+.dateCalendarYear {
+  margin: 0;
+  font-size: 0.76rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+
+.dateCalendarMonth {
+  margin: 0.05rem 0 0.15rem;
+  font-family: var(--font-en);
+  font-size: 0.86rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8c8f96;
+}
+
+.dateWeekHeader {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0;
+  background: #f0f0f0;
+  border-bottom: 1px solid rgba(31, 28, 26, 0.08);
+  padding: 0.2rem 0;
+}
+
+.dateWeekLabel {
+  text-align: center;
+  font-size: 0.72rem;
+  color: #2c3240;
+}
+
+.dateWeekLabel:first-child {
+  color: #e24444;
+}
+
+.dateCalendarGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0;
+}
+
+.dateCell {
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  font-size: 0.94rem;
+  color: #1f2330;
+  border-radius: 999px;
+  width: 2rem;
+  height: 2rem;
+  margin: 0.05rem auto;
+}
+
+.dateCalendarGrid > .dateCell:nth-child(7n + 1) {
+  color: #e24444;
+}
+
+.dateCellEmpty {
+  color: transparent;
+}
+
+.dateCellHighlight {
+  background: #f7d7dc;
+  color: #1f2330;
+  font-weight: 600;
+}
+
+.dateCeremonyTime {
+  margin: 0;
+  font-size: 1.03rem;
+  color: #1f2330;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
 .venueName {
   margin: 0 0 0.25rem;
   font-size: 1.1rem;

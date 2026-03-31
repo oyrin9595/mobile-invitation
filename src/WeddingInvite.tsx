@@ -134,6 +134,17 @@ export function WeddingInvite({ data }: Props) {
   );
 
   const venueMapSrc = venueMapEmbedSrc(data.venue);
+  const { year, month, day } = data.calendarDate;
+  const firstWeekday = new Date(year, month - 1, 1).getDay();
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const dayCells: Array<number | null> = [
+    ...Array.from({ length: firstWeekday }, () => null),
+    ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
+  ];
+  while (dayCells.length % 7 !== 0) {
+    dayCells.push(null);
+  }
+  const weekdayLabels = ["일", "월", "화", "수", "목", "금", "토"];
 
   return (
     <>
@@ -225,16 +236,34 @@ export function WeddingInvite({ data }: Props) {
 
       <RevealSection>
         <div className={styles.sectionInner}>
-          <h2 className={styles.sectionTitle}>Date</h2>
-          <ul className={styles.scheduleList}>
-            {data.schedule.map((item) => (
-              <li key={item.label + item.datetime} className={styles.scheduleItem}>
-                <span className={styles.scheduleLabel}>{item.label}</span>
-                <span className={`${styles.scheduleWhen} mono-nums`}>{item.datetime}</span>
-                {item.note ? <span className={styles.scheduleNote}>{item.note}</span> : null}
-              </li>
-            ))}
-          </ul>
+          <h2 className={`${styles.sectionTitle} ${styles.dateSectionTitle}`}>The Wedding Day</h2>
+          <div className={styles.dateCalendarWrap}>
+            <p className={`${styles.dateCeremonyTime} mono-nums`}>{data.schedule[0]?.datetime}</p>
+            <div className={styles.dateCalendarCard} aria-label="예식 달력">
+              <p className={`${styles.dateCalendarYear} mono-nums`}>{year}</p>
+              <p className={styles.dateCalendarMonth}>{month}월</p>
+              <div className={styles.dateWeekHeader}>
+                {weekdayLabels.map((label) => (
+                  <span key={label} className={styles.dateWeekLabel}>
+                    {label}
+                  </span>
+                ))}
+              </div>
+              <div className={styles.dateCalendarGrid}>
+                {dayCells.map((cellDay, index) => (
+                  <span
+                    key={`${cellDay ?? "empty"}-${index}`}
+                    className={`${styles.dateCell} ${cellDay === null ? styles.dateCellEmpty : ""} ${
+                      cellDay === day ? styles.dateCellHighlight : ""
+                    }`}
+                    aria-hidden={cellDay === null}
+                  >
+                    {cellDay ?? ""}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </RevealSection>
 

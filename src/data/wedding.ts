@@ -41,6 +41,12 @@ export type WeddingData = {
     datetime: string;
     note?: string;
   }[];
+  calendarDate: {
+    year: number;
+    month: number;
+    day: number;
+    weekday: string;
+  };
   venue: {
     name: string;
     hall?: string;
@@ -92,8 +98,13 @@ export const wedding: WeddingData = {
   },
   schedule: [
     { label: "예식", datetime: "2025년 5월 23일 토요일 오후 3시 30분" },
-    { label: "피로연", datetime: "오후 6시", note: "서울 영등포구 도림로147길 22 2층 우비공" },
   ],
+  calendarDate: {
+    year: 2025,
+    month: 5,
+    day: 23,
+    weekday: "토요일",
+  },
   venue: {
     name: "더 베르G",
     hall: "가든홀",
