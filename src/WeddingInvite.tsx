@@ -4,13 +4,29 @@ import { galleryImageUrls } from "./data/galleryImages.generated";
 import { venueMapEmbedSrc } from "./mapEmbed";
 import { publicAssetUrl } from "./publicAssetUrl";
 import { useReveal } from "./hooks/useReveal";
+import { supabase } from "./lib/supabase";
 import styles from "./WeddingInvite.module.css";
 
 type Props = { data: WeddingData };
+type GuestbookEntry = {
+  id: string;
+  name: string;
+  message: string;
+  created_at: string;
+};
 
 export function WeddingInvite({ data }: Props) {
   const [toast, setToast] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [entries, setEntries] = useState<GuestbookEntry[]>([]);
+  const [guestbookLoading, setGuestbookLoading] = useState(true);
+  const [guestbookError, setGuestbookError] = useState<string | null>(null);
+  const [formName, setFormName] = useState("");
+  const [formPassword, setFormPassword] = useState("");
+  const [formMessage, setFormMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [deletePasswordById, setDeletePasswordById] = useState<Record<string, string>>({});
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const swipeRef = useRef<{ x: number; y: number } | null>(null);
   const suppressBackdropClickRef = useRef(false);
 
@@ -69,6 +85,33 @@ export function WeddingInvite({ data }: Props) {
       document.removeEventListener("touchmove", onTouchMove);
     };
   }, [lightboxIndex]);
+
+  const fetchGuestbook = useCallback(async () => {
+    if (!supabase) {
+      setGuestbookError("Supabase 환경변수가 설정되지 않았어요.");
+      setGuestbookLoading(false);
+      return;
+    }
+    setGuestbookLoading(true);
+    const { data, error } = await supabase
+      .from("guestbook_entries")
+      .select("id, name, message, created_at")
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    if (error) {
+      setGuestbookError("방명록을 불러오지 못했어요. 잠시 후 다시 시도해주세요.");
+      setEntries([]);
+    } else {
+      setGuestbookError(null);
+      setEntries(data ?? []);
+    }
+    setGuestbookLoading(false);
+  }, []);
+
+  useEffect(() => {
+    void fetchGuestbook();
+  }, [fetchGuestbook]);
 
   const onLightboxPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     if (e.button !== 0) return;
@@ -132,6 +175,91 @@ export function WeddingInvite({ data }: Props) {
     },
     [showCopied]
   );
+
+  const onSubmitGuestbook = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (!supabase) {
+        setGuestbookError("Supabase 환경변수가 설정되지 않았어요.");
+        return;
+      }
+
+      const name = formName.trim();
+      const password = formPassword.trim();
+      const message = formMessage.trim();
+      if (!name || !password || !message) return;
+
+      setSubmitting(true);
+      setGuestbookError(null);
+
+      const { data, error } = await supabase.functions.invoke("create-guestbook-entry", {
+        body: { name, password, message },
+      });
+
+      if (error) {
+        setGuestbookError("방명록 등록에 실패했어요. 잠시 후 다시 시도해주세요.");
+      } else {
+        const created = data?.entry as GuestbookEntry | undefined;
+        if (created) {
+          setEntries((prev) => [created, ...prev]);
+        } else {
+          await fetchGuestbook();
+        }
+        setFormName("");
+        setFormPassword("");
+        setFormMessage("");
+      }
+
+      setSubmitting(false);
+    },
+    [fetchGuestbook, formMessage, formName, formPassword]
+  );
+
+  const onDeleteGuestbook = useCallback(
+    async (id: string) => {
+      if (!supabase) {
+        setGuestbookError("Supabase 환경변수가 설정되지 않았어요.");
+        return;
+      }
+
+      const password = (deletePasswordById[id] ?? "").trim();
+      if (!password) {
+        setGuestbookError("삭제 비밀번호를 입력해주세요.");
+        return;
+      }
+
+      setDeletingId(id);
+      setGuestbookError(null);
+
+      const { error } = await supabase.functions.invoke("delete-guestbook-entry", {
+        body: { id, password },
+      });
+
+      if (error) {
+        setGuestbookError("비밀번호가 다르거나 삭제에 실패했어요.");
+      } else {
+        setEntries((prev) => prev.filter((entry) => entry.id !== id));
+        setDeletePasswordById((prev) => {
+          const next = { ...prev };
+          delete next[id];
+          return next;
+        });
+      }
+
+      setDeletingId(null);
+    },
+    [deletePasswordById]
+  );
+
+  const formatGuestbookDate = useCallback((iso: string) => {
+    const date = new Date(iso);
+    if (Number.isNaN(date.getTime())) return "";
+    return date.toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  }, []);
 
   const venueMapSrc = venueMapEmbedSrc(data.venue);
   const { year, month, day } = data.calendarDate;
@@ -397,6 +525,88 @@ export function WeddingInvite({ data }: Props) {
                 ))}
               </div>
             </details>
+          </div>
+        </div>
+      </RevealSection>
+
+      <RevealSection>
+        <div className={styles.sectionInner}>
+          <h2 className={styles.sectionTitle}>Guestbook</h2>
+          <form className={styles.guestbookForm} onSubmit={onSubmitGuestbook}>
+            <div className={styles.guestbookFormTop}>
+              <input
+                className={styles.guestbookInput}
+                type="text"
+                placeholder="이름"
+                value={formName}
+                onChange={(e) => setFormName(e.target.value)}
+                maxLength={30}
+                required
+              />
+              <input
+                className={styles.guestbookInput}
+                type="password"
+                placeholder="비밀번호"
+                value={formPassword}
+                onChange={(e) => setFormPassword(e.target.value)}
+                minLength={4}
+                maxLength={20}
+                required
+              />
+            </div>
+            <textarea
+              className={styles.guestbookTextarea}
+              placeholder="축하 메시지를 남겨주세요."
+              value={formMessage}
+              onChange={(e) => setFormMessage(e.target.value)}
+              maxLength={500}
+              rows={4}
+              required
+            />
+            <button className={styles.guestbookSubmit} type="submit" disabled={submitting}>
+              {submitting ? "등록 중..." : "방명록 남기기"}
+            </button>
+          </form>
+
+          {guestbookError ? <p className={styles.guestbookError}>{guestbookError}</p> : null}
+
+          <div className={styles.guestbookList}>
+            {guestbookLoading ? (
+              <p className={styles.guestbookEmpty}>방명록을 불러오는 중...</p>
+            ) : entries.length === 0 ? (
+              <p className={styles.guestbookEmpty}>첫 축하 메시지를 남겨주세요.</p>
+            ) : (
+              entries.map((entry) => (
+                <article key={entry.id} className={styles.guestbookItem}>
+                  <div className={styles.guestbookItemHead}>
+                    <p className={styles.guestbookName}>{entry.name}</p>
+                    <p className={styles.guestbookDate}>{formatGuestbookDate(entry.created_at)}</p>
+                  </div>
+                  <p className={styles.guestbookMessage}>{entry.message}</p>
+                  <div className={styles.guestbookDeleteRow}>
+                    <input
+                      className={styles.guestbookDeleteInput}
+                      type="password"
+                      placeholder="삭제 비밀번호"
+                      value={deletePasswordById[entry.id] ?? ""}
+                      onChange={(e) =>
+                        setDeletePasswordById((prev) => ({ ...prev, [entry.id]: e.target.value }))
+                      }
+                      minLength={4}
+                      maxLength={20}
+                    />
+                    <button
+                      type="button"
+                      className={styles.guestbookDeleteButton}
+                      disabled={deletingId === entry.id}
+                      onClick={() => void onDeleteGuestbook(entry.id)}
+                    >
+                      {deletingId === entry.id ? "삭제 중..." : "삭제"}
+                    </button>
+                  </div>
+                </article>
+              ))
+            )}
           </div>
         </div>
       </RevealSection>
