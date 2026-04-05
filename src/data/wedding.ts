@@ -52,7 +52,7 @@ export type WeddingData = {
     hall?: string;
     address: string;
     mapUrl: string;
-    /** 지도 미리보기: 네이버 지도 웹에서 장소 → 우클릭으로 위·경도 확인 후 입력 (OpenStreetMap 임베드) */
+    /** 지도 미리보기: 위·경도 (VITE_NCPMAP_KEY_ID 있으면 NCP JS 지도, 없으면 OSM iframe 또는 mapEmbedUrl) */
     mapPreview?: { lat: number; lng: number };
     /** 네이버 지도 「공유 → HTML 태그」의 iframe src URL — 있으면 이 값을 우선 사용 */
     mapEmbedUrl?: string;

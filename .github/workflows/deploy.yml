@@ -30,6 +30,7 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_NCPMAP_KEY_ID: ${{ secrets.VITE_NCPMAP_KEY_ID }}
 
       - name: Deploy
         run: npm run deploy

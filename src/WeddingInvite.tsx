@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import type { GiftAccountRow, WeddingData } from "./data/wedding";
 import { galleryImageUrls } from "./data/galleryImages.generated";
+import { NaverDynamicMap, hasNaverMapKey } from "./components/NaverDynamicMap";
 import { venueMapEmbedSrc } from "./mapEmbed";
 import { publicAssetUrl } from "./publicAssetUrl";
 import { useReveal } from "./hooks/useReveal";
@@ -455,7 +456,16 @@ export function WeddingInvite({ data }: Props) {
           <p className={styles.venueName}>{data.venue.name}</p>
           {data.venue.hall ? <p className={styles.venueHall}>{data.venue.hall}</p> : null}
           <p className={styles.venueAddr}>{data.venue.address}</p>
-          {venueMapSrc ? (
+          {data.venue.mapPreview && hasNaverMapKey() ? (
+            <NaverDynamicMap
+              className={styles.mapPreviewWrap}
+              canvasClassName={styles.mapNaverCanvas}
+              lat={data.venue.mapPreview.lat}
+              lng={data.venue.mapPreview.lng}
+              zoom={17}
+              markerTitle={data.venue.name}
+            />
+          ) : venueMapSrc ? (
             <div className={styles.mapPreviewWrap}>
               <iframe
                 title={`${data.venue.name} 위치 지도 미리보기`}
