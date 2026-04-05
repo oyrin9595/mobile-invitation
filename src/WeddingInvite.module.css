@@ -389,12 +389,13 @@
   gap: 0.85rem;
 }
 
+/* Invitation 등 다른 섹션 제목과 동일한 영문 타이틀 스타일 */
 .dateSectionTitle {
-  font-family: "Great Vibes", "Times New Roman", serif;
-  font-size: 2rem;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  color: #f08f97;
+  font-family: var(--font-en);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink);
   text-transform: none;
 }
 
@@ -414,6 +415,8 @@
   display: grid;
   justify-items: center;
   gap: 0.4rem;
+  font-family: var(--font-ko);
+  font-weight: 300;
 }
 
 .dateCalendarYear {
@@ -425,11 +428,11 @@
 
 .dateCalendarMonth {
   margin: 0.05rem 0 0.15rem;
-  font-family: var(--font-en);
+  font-family: var(--font-ko);
   font-size: 0.86rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #8c8f96;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--muted);
 }
 
 .dateWeekHeader {
@@ -445,7 +448,9 @@
 .dateWeekLabel {
   text-align: center;
   font-size: 0.72rem;
-  color: #2c3240;
+  font-family: var(--font-ko);
+  font-weight: 300;
+  color: var(--muted);
 }
 
 .dateWeekLabel:first-child {
@@ -464,7 +469,9 @@
   display: grid;
   place-items: center;
   font-size: 0.94rem;
-  color: #1f2330;
+  font-family: var(--font-ko);
+  font-weight: 300;
+  color: var(--ink);
   border-radius: 999px;
   width: 2rem;
   height: 2rem;
@@ -472,7 +479,7 @@
 }
 
 .dateCalendarGrid > .dateCell:nth-child(7n + 1) {
-  color: #e24444;
+  color: #c94a4a;
 }
 
 .dateCellEmpty {
@@ -481,14 +488,17 @@
 
 .dateCellHighlight {
   background: #f7d7dc;
-  color: #1f2330;
-  font-weight: 600;
+  color: var(--ink);
+  font-weight: 500;
 }
 
 .dateCeremonyTime {
   margin: 0;
-  font-size: 1.03rem;
-  color: #1f2330;
+  font-family: var(--font-ko);
+  font-size: 0.92rem;
+  font-weight: 300;
+  line-height: 2;
+  color: var(--muted);
   text-align: center;
   letter-spacing: 0.01em;
 }
@@ -567,6 +577,7 @@
 
 .directionsVenueLabel {
   margin: 0 0 0.35rem;
+  font-family: var(--font-ko);
   font-size: 1rem;
   font-weight: 400;
   color: var(--ink);
@@ -574,14 +585,19 @@
 
 .directionsAddress {
   margin: 0;
-  font-size: 0.88rem;
-  line-height: 1.7;
+  font-family: var(--font-ko);
+  font-size: 0.92rem;
+  font-weight: 300;
+  line-height: 2;
   color: var(--muted);
 }
 
 .directionsPhone {
   margin: 0.35rem 0 0;
-  font-size: 0.82rem;
+  font-family: var(--font-ko);
+  font-size: 0.92rem;
+  font-weight: 300;
+  line-height: 2;
   color: var(--muted);
 }
 
@@ -605,9 +621,10 @@
 
 .directionsGroupTitle {
   margin: 0 0 0.35rem;
-  font-family: var(--font-en);
+  font-family: var(--font-ko);
   font-size: 0.85rem;
-  letter-spacing: 0.08em;
+  font-weight: 500;
+  letter-spacing: 0.02em;
   color: var(--accent);
 }
 
@@ -621,8 +638,10 @@
 }
 
 .directionsLines li {
-  font-size: 0.84rem;
-  line-height: 1.75;
+  font-family: var(--font-ko);
+  font-size: 0.92rem;
+  font-weight: 300;
+  line-height: 2;
   color: var(--muted);
 }
 
