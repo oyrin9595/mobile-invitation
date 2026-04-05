@@ -412,6 +412,45 @@ export function WeddingInvite({ data }: Props) {
 
       <RevealSection>
         <div className={styles.sectionInner}>
+          <h2 className={styles.sectionTitle}>Gallery</h2>
+          <p
+            style={{
+              textAlign: "center",
+              margin: "0 0 1rem",
+              fontSize: "0.82rem",
+              color: "var(--muted)",
+            }}
+          >
+            {data.galleryCaption}
+          </p>
+          <div className={styles.galleryGrid}>
+            {galleryImageUrls.map((src: string, i: number) => {
+              const alt = `웨딩 사진 ${i + 1}`;
+              return (
+                <div key={src} className={styles.galleryCell}>
+                  <button
+                    type="button"
+                    className={styles.galleryThumb}
+                    onClick={() => setLightboxIndex(i)}
+                    aria-label={`${alt} 전체 화면으로 보기`}
+                  >
+                    <img
+                      className={styles.galleryImg}
+                      src={publicAssetUrl(src)}
+                      alt={alt}
+                      loading="lazy"
+                      draggable={false}
+                    />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </RevealSection>
+
+      <RevealSection>
+        <div className={styles.sectionInner}>
           <h2 className={styles.sectionTitle}>Venue</h2>
           <p className={styles.venueName}>{data.venue.name}</p>
           {data.venue.hall ? <p className={styles.venueHall}>{data.venue.hall}</p> : null}
@@ -454,45 +493,6 @@ export function WeddingInvite({ data }: Props) {
                 </ul>
               </section>
             ))}
-          </div>
-        </div>
-      </RevealSection>
-
-      <RevealSection>
-        <div className={styles.sectionInner}>
-          <h2 className={styles.sectionTitle}>Gallery</h2>
-          <p
-            style={{
-              textAlign: "center",
-              margin: "0 0 1rem",
-              fontSize: "0.82rem",
-              color: "var(--muted)",
-            }}
-          >
-            {data.galleryCaption}
-          </p>
-          <div className={styles.galleryGrid}>
-            {galleryImageUrls.map((src: string, i: number) => {
-              const alt = `웨딩 사진 ${i + 1}`;
-              return (
-                <div key={src} className={styles.galleryCell}>
-                  <button
-                    type="button"
-                    className={styles.galleryThumb}
-                    onClick={() => setLightboxIndex(i)}
-                    aria-label={`${alt} 전체 화면으로 보기`}
-                  >
-                    <img
-                      className={styles.galleryImg}
-                      src={publicAssetUrl(src)}
-                      alt={alt}
-                      loading="lazy"
-                      draggable={false}
-                    />
-                  </button>
-                </div>
-              );
-            })}
           </div>
         </div>
       </RevealSection>
