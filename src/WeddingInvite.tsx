@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import type { GiftAccountRow, WeddingData } from "./data/wedding";
-import { galleryImageUrls } from "./data/galleryImages.generated";
+import { galleryImages } from "./data/galleryImages.generated";
 import { NaverDynamicMap, hasNaverMapKey } from "./components/NaverDynamicMap";
 import { venueMapEmbedSrc } from "./mapEmbed";
 import { publicAssetUrl } from "./publicAssetUrl";
@@ -65,7 +65,7 @@ export function WeddingInvite({ data }: Props) {
       }
       if (e.key === "ArrowRight") {
         setLightboxIndex((i) =>
-          i !== null ? (i + 1) % galleryImageUrls.length : i
+          i !== null ? (i + 1) % galleryImages.length : i
         );
       }
     };
@@ -115,18 +115,23 @@ export function WeddingInvite({ data }: Props) {
   }, [fetchGuestbook]);
 
   const onLightboxPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.button !== 0) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    if (e.pointerType === "touch" && !e.isPrimary) return;
     swipeRef.current = { x: e.clientX, y: e.clientY };
-    e.currentTarget.setPointerCapture(e.pointerId);
+    if (e.pointerType === "mouse") {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    }
   }, []);
 
   const onLightboxPointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     const start = swipeRef.current;
     swipeRef.current = null;
-    try {
-      e.currentTarget.releasePointerCapture(e.pointerId);
-    } catch {
-      /* 캡처 없음 */
+    if (e.pointerType === "mouse") {
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch {
+        /* 캡처 없음 */
+      }
     }
     if (start === null) return;
 
@@ -137,7 +142,7 @@ export function WeddingInvite({ data }: Props) {
 
     if (dx < 0) {
       setLightboxIndex((i) =>
-        i !== null ? (i + 1) % galleryImageUrls.length : i
+        i !== null ? (i + 1) % galleryImages.length : i
       );
     } else {
       setLightboxIndex((i) => (i !== null && i > 0 ? i - 1 : i));
@@ -157,7 +162,7 @@ export function WeddingInvite({ data }: Props) {
   }, []);
 
   const goLightboxNext = useCallback(() => {
-    setLightboxIndex((i) => (i !== null ? (i + 1) % galleryImageUrls.length : i));
+    setLightboxIndex((i) => (i !== null ? (i + 1) % galleryImages.length : i));
   }, []);
 
   const showCopied = useCallback(() => {
@@ -421,10 +426,10 @@ export function WeddingInvite({ data }: Props) {
             {data.galleryCaption}
           </p>
           <div className={styles.galleryGrid}>
-            {galleryImageUrls.map((src: string, i: number) => {
+            {galleryImages.map((image, i: number) => {
               const alt = `웨딩 사진 ${i + 1}`;
               return (
-                <div key={src} className={styles.galleryCell}>
+                <div key={image.full} className={styles.galleryCell}>
                   <button
                     type="button"
                     className={styles.galleryThumb}
@@ -433,9 +438,10 @@ export function WeddingInvite({ data }: Props) {
                   >
                     <img
                       className={styles.galleryImg}
-                      src={publicAssetUrl(src)}
+                      src={publicAssetUrl(image.thumb)}
                       alt={alt}
                       loading="lazy"
+                      decoding="async"
                       draggable={false}
                     />
                   </button>
@@ -699,7 +705,7 @@ export function WeddingInvite({ data }: Props) {
           className={styles.lightbox}
           role="dialog"
           aria-modal="true"
-          aria-label={`갤러리 ${lightboxIndex + 1}번째, 총 ${galleryImageUrls.length}장`}
+          aria-label={`갤러리 ${lightboxIndex + 1}번째, 총 ${galleryImages.length}장`}
           onClick={() => {
             if (suppressBackdropClickRef.current) return;
             setLightboxIndex(null);
@@ -762,13 +768,13 @@ export function WeddingInvite({ data }: Props) {
           >
             <img
               className={styles.lightboxImg}
-              src={publicAssetUrl(galleryImageUrls[lightboxIndex])}
+              src={publicAssetUrl(galleryImages[lightboxIndex].full)}
               alt={`웨딩 사진 ${lightboxIndex + 1}`}
               draggable={false}
               onClick={(e) => e.stopPropagation()}
             />
             <p className={styles.lightboxCounter} aria-hidden>
-              {lightboxIndex + 1} / {galleryImageUrls.length}
+              {lightboxIndex + 1} / {galleryImages.length}
             </p>
           </div>
         </div>

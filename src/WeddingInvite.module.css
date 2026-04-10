@@ -1064,7 +1064,7 @@
   display: block;
   padding: 0;
   background: rgba(12, 11, 10, 0.94);
-  touch-action: none;
+  touch-action: pinch-zoom;
   overscroll-behavior: none;
 }
 
