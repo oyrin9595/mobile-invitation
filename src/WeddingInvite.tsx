@@ -71,22 +71,18 @@ export function WeddingInvite({ data }: Props) {
     };
 
     const onWheel = (e: WheelEvent) => {
+      // 브라우저 확대 제스처(ctrl/cmd + wheel)는 허용
+      if (e.ctrlKey || e.metaKey) return;
       e.preventDefault();
-    };
-
-    const onTouchMove = (e: TouchEvent) => {
-      if (e.touches.length > 1) e.preventDefault();
     };
 
     document.addEventListener("keydown", onKeyDown);
     document.addEventListener("wheel", onWheel, { passive: false });
-    document.addEventListener("touchmove", onTouchMove, { passive: false });
 
     return () => {
       document.body.style.overflow = prevOverflow;
       document.removeEventListener("keydown", onKeyDown);
       document.removeEventListener("wheel", onWheel);
-      document.removeEventListener("touchmove", onTouchMove);
     };
   }, [lightboxIndex]);
 

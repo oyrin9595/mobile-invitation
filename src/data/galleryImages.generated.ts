@@ -20,5 +20,12 @@ export const galleryImageUrls: string[] = [
   "/gallery/17.jpg",
   "/gallery/18.jpg",
   "/gallery/19.jpg",
-  "/gallery/20.jpg"
+  "/gallery/20.jpg",
+  "/gallery/21.jpg",
+  "/gallery/22.jpg",
+  "/gallery/23.jpg",
+  "/gallery/24.jpg",
+  "/gallery/25.jpg",
+  "/gallery/26.jpg",
+  "/gallery/27.jpg"
 ];

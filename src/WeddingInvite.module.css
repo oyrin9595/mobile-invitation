@@ -1168,7 +1168,7 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  touch-action: none;
+  touch-action: pinch-zoom;
 }
 
 .lightboxCounter {
@@ -1201,7 +1201,7 @@
   object-position: center;
   user-select: none;
   -webkit-user-drag: none;
-  touch-action: none;
+  touch-action: pinch-zoom;
   pointer-events: auto;
 }
 
