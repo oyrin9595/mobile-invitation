@@ -20,6 +20,7 @@ const GUESTBOOK_PAGE_SIZE = 5;
 export function WeddingInvite({ data }: Props) {
   const [toast, setToast] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [heroTransitionDone, setHeroTransitionDone] = useState(false);
   const [entries, setEntries] = useState<GuestbookEntry[]>([]);
   const [guestbookLoading, setGuestbookLoading] = useState(true);
   const [guestbookError, setGuestbookError] = useState<string | null>(null);
@@ -33,6 +34,7 @@ export function WeddingInvite({ data }: Props) {
   const [guestbookPage, setGuestbookPage] = useState(1);
   const swipeRef = useRef<{ x: number; y: number } | null>(null);
   const suppressBackdropClickRef = useRef(false);
+  const heroPhotoRef = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -53,10 +55,52 @@ export function WeddingInvite({ data }: Props) {
   }, []);
 
   useEffect(() => {
-    if (lightboxIndex === null) return;
+    const photoEl = heroPhotoRef.current;
+    if (!photoEl) {
+      setHeroTransitionDone(true);
+      return;
+    }
 
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (media.matches) {
+      setHeroTransitionDone(true);
+      return;
+    }
+
+    const onAnimationEnd = () => {
+      setHeroTransitionDone(true);
+    };
+
+    photoEl.addEventListener("animationend", onAnimationEnd, { once: true });
+    // 애니메이션 종료 전, 사진 전환이 시작되는 시점에 스크롤 먼저 허용
+    const unlockTimer = window.setTimeout(() => {
+      setHeroTransitionDone(true);
+    }, 1800);
+    const fallbackTimer = window.setTimeout(() => {
+      setHeroTransitionDone(true);
+    }, 9000);
+
+    return () => {
+      window.clearTimeout(unlockTimer);
+      window.clearTimeout(fallbackTimer);
+      photoEl.removeEventListener("animationend", onAnimationEnd);
+    };
+  }, []);
+
+  useEffect(() => {
     const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    if (!heroTransitionDone || lightboxIndex !== null) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [heroTransitionDone, lightboxIndex]);
+
+  useEffect(() => {
+    if (lightboxIndex === null) return;
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") setLightboxIndex(null);
@@ -80,7 +124,6 @@ export function WeddingInvite({ data }: Props) {
     document.addEventListener("wheel", onWheel, { passive: false });
 
     return () => {
-      document.body.style.overflow = prevOverflow;
       document.removeEventListener("keydown", onKeyDown);
       document.removeEventListener("wheel", onWheel);
     };
@@ -303,6 +346,7 @@ export function WeddingInvite({ data }: Props) {
               fetchPriority="high"
             />
             <img
+              ref={heroPhotoRef}
               className={styles.heroBgPhoto}
               src={publicAssetUrl("/image.jpg")}
               alt=""
