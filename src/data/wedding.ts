@@ -165,7 +165,7 @@ export const wedding: WeddingData = {
       groups: [
         {
           groupLabel: "신부",
-          accounts: [{ holder: "오예린", bank: "카카오뱅크", number: "3333-02-5292878" }],
+          accounts: [{ holder: "오예린", bank: "하나은행", number: "348-890588-60207" }],
         },
         {
           groupLabel: "혼주",
