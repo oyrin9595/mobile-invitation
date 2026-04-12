@@ -420,10 +420,12 @@ export function WeddingInvite({ data }: Props) {
         <div className={styles.heroCopy}>
           <div className={styles.heroCopyInner}>
             <p className={styles.heroDateEyebrow}>Wedding Day</p>
-            <p className={styles.heroDatePrimary}>{data.hero.dateLine}</p>
-            {data.hero.timeLine ? (
-              <p className={styles.heroDateTime}>{data.hero.timeLine}</p>
-            ) : null}
+            <p className={styles.heroDatePrimary}>
+              {[data.hero.dateLine, data.hero.timeLine].filter(Boolean).join(" ")}
+            </p>
+            <p className={styles.heroVenueSubline}>
+              {[data.venue.name, data.venue.hall].filter(Boolean).join(" · ")}
+            </p>
             <div className={styles.heroCopyDivider} aria-hidden />
             <p className={styles.introEyebrow}>Wedding Invitation</p>
             <div className={styles.introNames}>

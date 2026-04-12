@@ -157,23 +157,39 @@
   color: var(--accent);
 }
 
+/* app-shell 최대 440px 기준 — 넓은 브라우저에서도 vw만 쓰면 과대해져 줄바꿈됨 */
 .heroDatePrimary {
   margin: 0;
+  padding: 0 0.15rem;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   font-family: var(--font-ko);
-  font-size: clamp(1.14rem, 4.2vw, 1.45rem);
+  font-size: max(0.82rem, min(1.32rem, calc((min(100vw, 440px) - 3rem) / 20)));
   font-weight: 400;
-  letter-spacing: 0.03em;
-  line-height: 1.45;
+  letter-spacing: 0.015em;
+  line-height: 1.4;
   color: var(--ink);
+  text-align: center;
+  white-space: nowrap;
 }
 
-.heroDateTime {
+.heroVenueSubline {
   margin: 0.35rem 0 0;
+  padding: 0 0.15rem;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   font-family: var(--font-ko);
-  font-size: clamp(0.9rem, 3.2vw, 1.02rem);
+  font-size: max(0.84rem, min(1.08rem, calc((min(100vw, 440px) - 3rem) / 17)));
   font-weight: 300;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.03em;
   color: var(--muted);
+  text-align: center;
+  line-height: 1.45;
+  white-space: nowrap;
 }
 
 .heroCopyDivider {
@@ -242,6 +258,27 @@
 
   .heroCopy {
     flex: none;
+    padding: 1.85rem 0.8rem calc(2rem + var(--safe-bottom));
+  }
+
+  .heroDatePrimary {
+    font-size: max(0.9rem, min(1.38rem, calc((min(100vw, 440px) - 2rem) / 18)));
+  }
+
+  .heroVenueSubline {
+    font-size: max(0.9rem, min(1.14rem, calc((min(100vw, 440px) - 2rem) / 15)));
+  }
+
+  .section {
+    padding: 3rem 1rem 3.25rem;
+  }
+
+  .sectionInner {
+    padding: 1.75rem 1.1rem;
+  }
+
+  .dateCeremonyTime {
+    font-size: max(0.8rem, min(1.06rem, calc((min(100vw, 440px) - 2.35rem) / 19)));
   }
 }
 
@@ -557,13 +594,19 @@
 
 .dateCeremonyTime {
   margin: 0;
+  padding: 0 0.2rem;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   font-family: var(--font-ko);
-  font-size: 0.92rem;
+  font-size: max(0.74rem, min(0.98rem, calc((min(100vw, 440px) - 3rem) / 21)));
   font-weight: 300;
-  line-height: 2;
+  line-height: 1.45;
   color: var(--muted);
   text-align: center;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.012em;
+  white-space: nowrap;
 }
 
 .venueName {
