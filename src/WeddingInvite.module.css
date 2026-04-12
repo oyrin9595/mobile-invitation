@@ -59,6 +59,7 @@
 .heroBgScrim {
   position: absolute;
   inset: 0;
+  z-index: 2;
   background: linear-gradient(
     180deg,
     transparent 0%,
@@ -68,12 +69,61 @@
   pointer-events: none;
 }
 
+.heroMarriedOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(2.5rem, 16vh, 6.5rem) 1.5rem 2rem;
+  pointer-events: none;
+  transition: opacity 1.15s ease;
+}
+
+.heroMarriedOverlayFade {
+  opacity: 0;
+}
+
+.heroMarriedText {
+  margin: 0;
+  font-family: "Adelio Darmanto", serif;
+  /* 한 줄: app-shell(최대 440px)과 동일한 가용 폭 기준으로 축소, 상한 3.65rem */
+  font-size: max(0.92rem, min(3.65rem, calc((min(100vw, 440px) - 3rem) / 12.8)));
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.98);
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 2px 12px rgba(0, 0, 0, 0.4),
+    0 4px 22px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+/* 모바일: 한 줄 유지, 기본(12.8 나눗셈) 대비 약 1.5배 — 분모 ≈ 12.8/1.5 */
+@media (max-width: 640px) {
+  .heroMarriedText {
+    font-size: max(1.15rem, min(3.75rem, calc((min(100vw, 440px) - 2.75rem) / 8.53)));
+    letter-spacing: 0.05em;
+  }
+}
+
+.heroMarriedGlyph {
+  display: inline-block;
+}
+
+.heroMarriedGlyphHidden {
+  opacity: 0;
+}
+
 .scrollHint {
   position: absolute;
   bottom: calc(0.85rem + var(--safe-bottom));
   left: 50%;
   transform: translateX(-50%);
-  z-index: 2;
+  z-index: 3;
   font-size: 0.7rem;
   letter-spacing: 0.22em;
   color: rgba(255, 248, 240, 0.82);
@@ -154,7 +204,7 @@
 }
 
 .introName {
-  font-size: clamp(1.8rem, 6.2vw, 2.28rem);
+  font-size: clamp(1.62rem, 5.5vw, 2.12rem);
   font-weight: 400;
   letter-spacing: -0.02em;
   color: var(--ink);
@@ -162,7 +212,7 @@
 
 .introAmpersand {
   font-family: var(--font-en);
-  font-size: 1.55rem;
+  font-size: 1.45rem;
   font-style: italic;
   color: var(--muted);
   font-weight: 400;
@@ -175,14 +225,6 @@
   line-height: 1.75;
   color: var(--ink);
   font-weight: 400;
-}
-
-.introSubline {
-  margin: 0.75rem 0 0;
-  font-size: 0.88rem;
-  line-height: 1.75;
-  color: var(--muted);
-  font-weight: 300;
 }
 
 /* 모바일: 첫 화면은 일러스트/사진만 풀스크린, 날짜·문구는 스크롤 후 */
@@ -235,6 +277,10 @@
   color: var(--ink);
 }
 
+.sectionTitleKo {
+  font-family: var(--font-ko);
+}
+
 .message p {
   margin: 0 0 1rem;
   font-size: 0.92rem;
@@ -262,8 +308,8 @@
 
 /* 아버지 · [故] 어머니 | 의 아들/딸 | 이름 — 열마다 시작 정렬 */
 .familyLinesGridGu {
-  grid-template-columns: max-content max-content minmax(1.45em, max-content) max-content auto max-content;
-  column-gap: 0.42rem 0.86rem 0.46rem 0.95rem 1rem;
+  grid-template-columns: max-content max-content max-content max-content auto max-content;
+  column-gap: 0.42rem 0.86rem 0.5rem 0.95rem 1rem;
 }
 
 .familyLinesGridPlain {
@@ -295,10 +341,10 @@
 .familyGuSlot {
   display: inline-flex;
   align-items: baseline;
-  justify-content: flex-start;
+  justify-content: flex-end;
   justify-self: start;
   box-sizing: content-box;
-  min-width: 1.45em;
+  min-width: 0;
   min-height: 1em;
   padding-left: 0.08em;
 }
@@ -310,10 +356,13 @@
 
 .familyLinesGridGu .familyGuSlot {
   padding-left: 0;
-  margin-right: -0.14em;
+  padding-right: 0;
+  margin-right: 0.3em ;
 }
 
 .familyGu {
+  font-family: "Noto Serif KR", serif;
+  font-size: 0.8rem;
   font-weight: 500;
   color: var(--ink);
   opacity: 0.88;
@@ -523,6 +572,9 @@
   line-height: 1.65;
   color: var(--muted);
   text-align: center;
+  white-space: pre-line;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .mapPreviewWrap {
@@ -597,6 +649,9 @@
   font-weight: 300;
   line-height: 2;
   color: var(--muted);
+  white-space: pre-line;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .directionsPhone {

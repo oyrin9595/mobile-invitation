@@ -4,6 +4,10 @@
 export type GalleryImage = { thumb: string; full: string };
 export const galleryImages: GalleryImage[] = [
   {
+    "thumb": "/gallery/thumb/1.jpg",
+    "full": "/gallery/full/1.jpg"
+  },
+  {
     "thumb": "/gallery/thumb/2.jpg",
     "full": "/gallery/full/2.jpg"
   },
@@ -44,14 +48,6 @@ export const galleryImages: GalleryImage[] = [
     "full": "/gallery/full/11.jpg"
   },
   {
-    "thumb": "/gallery/thumb/12-1.jpg",
-    "full": "/gallery/full/12-1.jpg"
-  },
-  {
-    "thumb": "/gallery/thumb/12-2.jpg",
-    "full": "/gallery/full/12-2.jpg"
-  },
-  {
     "thumb": "/gallery/thumb/12.jpg",
     "full": "/gallery/full/12.jpg"
   },
@@ -68,24 +64,8 @@ export const galleryImages: GalleryImage[] = [
     "full": "/gallery/full/15.jpg"
   },
   {
-    "thumb": "/gallery/thumb/16-1.jpg",
-    "full": "/gallery/full/16-1.jpg"
-  },
-  {
-    "thumb": "/gallery/thumb/16-2.jpg",
-    "full": "/gallery/full/16-2.jpg"
-  },
-  {
-    "thumb": "/gallery/thumb/16-3.jpg",
-    "full": "/gallery/full/16-3.jpg"
-  },
-  {
     "thumb": "/gallery/thumb/16.jpg",
     "full": "/gallery/full/16.jpg"
-  },
-  {
-    "thumb": "/gallery/thumb/17-1.jpg",
-    "full": "/gallery/full/17-1.jpg"
   },
   {
     "thumb": "/gallery/thumb/17.jpg",
@@ -100,11 +80,47 @@ export const galleryImages: GalleryImage[] = [
     "full": "/gallery/full/19.jpg"
   },
   {
-    "thumb": "/gallery/thumb/20-1.jpg",
-    "full": "/gallery/full/20-1.jpg"
-  },
-  {
     "thumb": "/gallery/thumb/20.jpg",
     "full": "/gallery/full/20.jpg"
+  },
+  {
+    "thumb": "/gallery/thumb/21.jpg",
+    "full": "/gallery/full/21.jpg"
+  },
+  {
+    "thumb": "/gallery/thumb/22.jpg",
+    "full": "/gallery/full/22.jpg"
+  },
+  {
+    "thumb": "/gallery/thumb/23.jpg",
+    "full": "/gallery/full/23.jpg"
+  },
+  {
+    "thumb": "/gallery/thumb/24.jpg",
+    "full": "/gallery/full/24.jpg"
+  },
+  {
+    "thumb": "/gallery/thumb/25.jpg",
+    "full": "/gallery/full/25.jpg"
+  },
+  {
+    "thumb": "/gallery/thumb/26.jpg",
+    "full": "/gallery/full/26.jpg"
+  },
+  {
+    "thumb": "/gallery/thumb/27.jpg",
+    "full": "/gallery/full/27.jpg"
+  },
+  {
+    "thumb": "/gallery/thumb/28.jpg",
+    "full": "/gallery/full/28.jpg"
+  },
+  {
+    "thumb": "/gallery/thumb/29.jpg",
+    "full": "/gallery/full/29.jpg"
+  },
+  {
+    "thumb": "/gallery/thumb/30.jpg",
+    "full": "/gallery/full/30.jpg"
   }
 ];

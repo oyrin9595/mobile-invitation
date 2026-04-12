@@ -1,3 +1,27 @@
+@font-face {
+  font-family: "Gowun Batang";
+  src: url("/fonts/GowunBatang-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Gowun Batang";
+  src: url("/fonts/GowunBatang-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Adelio Darmanto";
+  src: url("/fonts/Adelio Darmanto Font.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg: #f4f0ea;
   --bg-deep: #ebe4d9;
@@ -8,7 +32,7 @@
   --card: #fffcf8;
   --shadow: 0 18px 48px rgba(31, 28, 26, 0.08);
   --radius: 20px;
-  --font-ko: "Noto Serif KR", serif;
+  --font-ko: "Gowun Batang", serif;
   --font-en: "Cormorant Garamond", serif;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -22,6 +46,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* rem 기준 살짝 키움 — 본문·섹션 한글 등 전반 가독 (영문 제목도 동일 비율) */
+  font-size: 105%;
 }
 
 body {

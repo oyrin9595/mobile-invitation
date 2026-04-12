@@ -26,8 +26,8 @@ export type WeddingData = {
     dateLine: string;
     timeLine?: string;
   };
+  /** 히어로 이름 아래 한 줄 문구 */
   headline: string;
-  subline: string;
   message: string[];
   /** Invitation 인사말 아래 혼주 소개 (부·모 이름 순) */
   familyPresentation: {
@@ -83,13 +83,12 @@ export const wedding: WeddingData = {
     dateLine: "2025년 5월 23일 토요일",
     timeLine: "오후 3시 30분",
   },
-  headline: "저희 두 사람이 사랑으로 하나가 됩니다",
-  subline: "소중한 걸음으로 축복해 주시면 감사하겠습니다",
+  headline: "따스한 봄날, 결혼합니다",
   message: [
     "서로 다른 길을 걸어온 두 사람이",
     "이제 같은 방향을 바라보며 걸어가려 합니다.",
     "따뜻한 마음으로 지켜봐 주시면",
-    "큰 기쁨이 되겠습니다.",
+    "더없는 기쁨으로 간직하겠습니다.",
   ],
   familyPresentation: {
     groomParents: ["이경윤", "장희경"],
@@ -108,7 +107,8 @@ export const wedding: WeddingData = {
   venue: {
     name: "더 베르G",
     hall: "가든홀",
-    address: "서울특별시 영등포구 국회대로 612 코레일유통사옥 2층",
+    address:
+      "서울특별시 영등포구 국회대로 612\n코레일유통사옥 2층",
     mapUrl: "https://map.naver.com/p/entry/place/2070513853",
     /** 당산동3가·국회대로(영등포구청역 쪽). 여의도 국회단지 동쪽 구간과 혼동되지 않도록 경도 ~126.90 */
     mapPreview: { lat: 37.525690, lng: 126.902005 },
@@ -119,12 +119,11 @@ export const wedding: WeddingData = {
     phone: "02.2088.5272",
     sections: [
       {
-        title: "자가용 이용 시",
-        lines: ["네비게이션 [더베르G] 검색", "국회대로 612 2층 / 당산동 3가 2-7"],
-      },
-      {
         title: "지하철 이용 시",
-        lines: ["2호선·5호선 영등포구청역 4번 출구에서 566m (도보 약 7분)"],
+        lines: [
+          "2호선·5호선 영등포구청역 4번 출구에서 566m (도보 약 7분)",
+          "영등포구청역 5번 출구 우리은행 앞 셔틀버스 상시 운행"
+        ],
       },
       {
         title: "버스 이용 시",
@@ -134,6 +133,10 @@ export const wedding: WeddingData = {
           "신화병원[19-121]: 좌석700, 간선 605·661, 간선 760, 지선 5616·5714",
           "삼환아파트[19-125]: 직행 9030, 직행 8000",
         ],
+      },
+      {
+        title: "자가용 이용 시",
+        lines: ["네비게이션 [더베르G] 검색", "국회대로 612 2층 / 당산동 3가 2-7"],
       },
       {
         title: "셔틀버스 안내",

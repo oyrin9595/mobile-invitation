@@ -17,6 +17,9 @@ type GuestbookEntry = {
 };
 const GUESTBOOK_PAGE_SIZE = 5;
 
+/** 히어로 일러스트→사진 전환 시 오버레이 타자 문구 */
+const HERO_MARRY_PHRASE = "We're getting Married!";
+
 export function WeddingInvite({ data }: Props) {
   const [toast, setToast] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -32,6 +35,8 @@ export function WeddingInvite({ data }: Props) {
   const [openedDeleteId, setOpenedDeleteId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [guestbookPage, setGuestbookPage] = useState(1);
+  const [heroMarryRevealCount, setHeroMarryRevealCount] = useState(0);
+  const [heroMarryFadeOut, setHeroMarryFadeOut] = useState(false);
   const swipeRef = useRef<{ x: number; y: number } | null>(null);
   const suppressBackdropClickRef = useRef(false);
   const heroPhotoRef = useRef<HTMLImageElement | null>(null);
@@ -52,6 +57,42 @@ export function WeddingInvite({ data }: Props) {
     return () => {
       window.removeEventListener("orientationchange", onOrientationChange);
     };
+  }, []);
+
+  useEffect(() => {
+    const phrase = HERO_MARRY_PHRASE;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const timeouts: number[] = [];
+
+    if (reduced.matches) {
+      setHeroMarryRevealCount(phrase.length);
+      timeouts.push(
+        window.setTimeout(() => setHeroMarryFadeOut(true), 2200)
+      );
+      return () => timeouts.forEach((id) => clearTimeout(id));
+    }
+
+    const startDelay = 600;
+    const typingDuration = 2300;
+    const n = phrase.length;
+    const perChar = typingDuration / n;
+    const fadeAfterTyping = 2000;
+
+    for (let i = 1; i <= n; i++) {
+      const id = window.setTimeout(() => {
+        setHeroMarryRevealCount(i);
+      }, startDelay + (i - 1) * perChar);
+      timeouts.push(id);
+    }
+
+    timeouts.push(
+      window.setTimeout(
+        () => setHeroMarryFadeOut(true),
+        startDelay + typingDuration + fadeAfterTyping
+      )
+    );
+
+    return () => timeouts.forEach((id) => clearTimeout(id));
   }, []);
 
   useEffect(() => {
@@ -352,8 +393,27 @@ export function WeddingInvite({ data }: Props) {
               alt=""
               fetchPriority="high"
             />
-            <div className={styles.heroBgScrim} />
           </div>
+          <div
+            className={`${styles.heroMarriedOverlay} ${heroMarryFadeOut ? styles.heroMarriedOverlayFade : ""}`}
+            aria-hidden
+          >
+            <p className={styles.heroMarriedText}>
+              {HERO_MARRY_PHRASE.split("").map((ch, i) => (
+                <span
+                  key={i}
+                  className={
+                    i < heroMarryRevealCount
+                      ? styles.heroMarriedGlyph
+                      : `${styles.heroMarriedGlyph} ${styles.heroMarriedGlyphHidden}`
+                  }
+                >
+                  {ch === " " ? "\u00A0" : ch}
+                </span>
+              ))}
+            </p>
+          </div>
+          <div className={styles.heroBgScrim} aria-hidden />
           <span className={styles.scrollHint}>SCROLL</span>
         </div>
 
@@ -374,7 +434,6 @@ export function WeddingInvite({ data }: Props) {
               <span className={styles.introName}>{data.couple.bride}</span>
             </div>
             <p className={styles.introKicker}>{data.headline}</p>
-            <p className={styles.introSubline}>{data.subline}</p>
           </div>
         </div>
       </header>
@@ -530,7 +589,7 @@ export function WeddingInvite({ data }: Props) {
 
       <RevealSection>
         <div className={styles.sectionInner}>
-          <h2 className={styles.sectionTitle}>오시는길</h2>
+          <h2 className={`${styles.sectionTitle} ${styles.sectionTitleKo}`}>오시는길</h2>
           <div className={styles.directionsIntro}>
             <p className={styles.directionsVenueLabel}>{data.directions.venueLabel}</p>
             <p className={styles.directionsAddress}>{data.directions.roadAddress}</p>
